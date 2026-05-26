@@ -8,7 +8,12 @@ version = "0.1.0"
 description = "Mockup for a validation language"
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "lark>=1.2",
+]
+
+[project.scripts]
+vlm = "validation_language_mockup.cli:main"
 
 [project.optional-dependencies]
 dev = [

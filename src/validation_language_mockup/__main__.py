@@ -1,6 +1,4 @@
-def main() -> None:
-    print("validation-language-mockup")
-
+from validation_language_mockup.cli import main
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

@@ -1,0 +1,52 @@
+// AVL validation rule grammar
+
+start: avl_rule
+
+avl_rule: "WHEN" bool_expr "THEN" bool_expr "GROUP BY" str_list "APPLY TO ROUNDS" int_list
+
+// BOOL_EXPR: literals, NOT, AND/OR (standard precedence: NOT > AND > OR)
+?bool_expr: bool_or
+
+?bool_or: bool_and
+        | bool_or "OR" bool_and   -> bool_or
+
+?bool_and: bool_unary
+         | bool_and "AND" bool_unary   -> bool_and
+
+?bool_unary: "NOT" bool_unary   -> bool_not
+           | bool_atom
+
+?bool_atom: bool_lit
+          | expr
+          | "(" bool_expr ")"
+
+bool_lit: "ALWAYS"   -> bool_true
+        | "TRUE"     -> bool_true
+        | "NEVER"    -> bool_false
+        | "FALSE"    -> bool_false
+
+// EXPR: column reference or current-round function
+?expr: col_expr
+     | current_round_expr
+
+col_expr: "COL" "(" col_name col_round? ")"
+
+col_round: "," "ROUND" "=" pos_int
+
+col_name: COL_NAME
+
+current_round_expr: "CURRENT_ROUND" "(" ")"
+
+str_list: str ("," str)*
+int_list: pos_int ("," pos_int)*
+
+str: ESCAPED_STRING
+
+pos_int: INT
+
+COL_NAME: /[A-Za-z_][A-Za-z0-9_]*/
+
+%import common.INT
+%import common.ESCAPED_STRING
+%import common.WS
+%ignore WS

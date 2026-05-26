@@ -13,8 +13,13 @@ pip install -e ".[dev]"
 ## Usage
 
 ```bash
-python -m validation_language_mockup
+vlm /path/to/rounds /path/to/rules.avl
+# or
+python -m validation_language_mockup /path/to/rounds /path/to/rules.avl
 ```
+
+`rounds` must be a folder containing `round_1.csv`, `round_2.csv`, and so on.
+The second argument is the path to an `.avl` validation file.
 
 ## Tests
 
