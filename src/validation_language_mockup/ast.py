@@ -1,5 +1,11 @@
 from dataclasses import dataclass
-from typing import Union
+from typing import Literal, Union
+
+CompareOp = Literal["<", "<=", ">", ">=", "=", "!="]
+
+IntExpr = Union["CurrentRoundExpr", "IntLiteral"]
+
+Expr = Union["ColExpr", "CurrentRoundExpr", "IntLiteral"]
 
 BoolExpr = Union[
     "BoolTrue",
@@ -7,8 +13,10 @@ BoolExpr = Union[
     "BoolNot",
     "BoolAnd",
     "BoolOr",
+    "CompareExpr",
     "ColExpr",
     "CurrentRoundExpr",
+    "IntLiteral",
 ]
 
 
@@ -40,6 +48,13 @@ class BoolOr:
 
 
 @dataclass(frozen=True)
+class CompareExpr:
+    left: Expr
+    op: CompareOp
+    right: Expr
+
+
+@dataclass(frozen=True)
 class ColExpr:
     name: str
     round: int | None = None
@@ -53,8 +68,12 @@ class CurrentRoundExpr:
 
 
 @dataclass(frozen=True)
+class IntLiteral:
+    value: int
+
+
+@dataclass(frozen=True)
 class Rule:
     when: BoolExpr
     then: BoolExpr
     group_by: list[str]
-    rounds: list[int]

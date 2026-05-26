@@ -2,9 +2,9 @@
 
 start: avl_rule
 
-avl_rule: "WHEN" bool_expr "THEN" bool_expr "GROUP BY" str_list "APPLY TO ROUNDS" int_list
+avl_rule: "WHEN" bool_expr "THEN" bool_expr "GROUP BY" str_list
 
-// BOOL_EXPR: literals, NOT, AND/OR (standard precedence: NOT > AND > OR)
+// BOOL_EXPR: literals, NOT, AND/OR, comparisons
 ?bool_expr: bool_or
 
 ?bool_or: bool_and
@@ -17,6 +17,7 @@ avl_rule: "WHEN" bool_expr "THEN" bool_expr "GROUP BY" str_list "APPLY TO ROUNDS
            | bool_atom
 
 ?bool_atom: bool_lit
+          | compare_expr
           | expr
           | "(" bool_expr ")"
 
@@ -25,20 +26,39 @@ bool_lit: "ALWAYS"   -> bool_true
         | "NEVER"    -> bool_false
         | "FALSE"    -> bool_false
 
-// EXPR: column reference or current-round function
+compare_expr: compare_operand COMPARE_OP compare_operand   -> compare
+
+compare_operand: expr
+               | pos_int
+
+COMPARE_OP: LE | GE | NE | LT | GT | EQ
+LE: "<="
+GE: ">="
+NE: "!="
+LT: "<"
+GT: ">"
+EQ: "="
+
+// EXPR: column reference or current round
 ?expr: col_expr
      | current_round_expr
 
 col_expr: "COL" "(" col_name col_round? ")"
 
-col_round: "," "ROUND" "=" pos_int
+col_round: "," "ROUND" "=" int_expr
 
 col_name: COL_NAME
 
 current_round_expr: "CURRENT_ROUND" "(" ")"
 
+// INT_EXPR: integer arithmetic resolved at parse time
+?int_expr: int_atom
+         | int_atom "-" pos_int   -> int_sub
+
+int_atom: pos_int
+        | current_round_expr
+
 str_list: str ("," str)*
-int_list: pos_int ("," pos_int)*
 
 str: ESCAPED_STRING
 

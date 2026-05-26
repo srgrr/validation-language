@@ -12,7 +12,10 @@ from validation_language_mockup.ast import (
     BoolOr,
     BoolTrue,
     ColExpr,
+    CompareExpr,
     CurrentRoundExpr,
+    Expr,
+    IntLiteral,
     Rule,
 )
 
@@ -24,12 +27,15 @@ class ParseContext:
     current_round: int
 
 
-def _positive_int(token: Token) -> int:
-    value = int(token)
+def _positive_int(value: int) -> int:
     if value < 1:
         msg = f"expected a positive integer, got {value}"
         raise ValueError(msg)
     return value
+
+
+def _int_value(node: IntLiteral | CurrentRoundExpr) -> int:
+    return node.value
 
 
 def _unquote(token: Token) -> str:
@@ -63,10 +69,8 @@ class AvlTransformer(Transformer):
     def start(self, avl_rule: Rule) -> Rule:
         return avl_rule
 
-    def avl_rule(
-        self, when: BoolExpr, then: BoolExpr, group_by: list[str], rounds: list[int]
-    ) -> Rule:
-        return Rule(when=when, then=then, group_by=group_by, rounds=rounds)
+    def avl_rule(self, when: BoolExpr, then: BoolExpr, group_by: list[str]) -> Rule:
+        return Rule(when=when, then=then, group_by=group_by)
 
     def bool_true(self) -> BoolTrue:
         return BoolTrue()
@@ -83,29 +87,41 @@ class AvlTransformer(Transformer):
     def bool_or(self, left: BoolExpr, right: BoolExpr) -> BoolOr:
         return BoolOr(left=left, right=right)
 
+    def compare_operand(self, value: Expr) -> Expr:
+        return value
+
+    def compare(self, left: Expr, op: Token, right: Expr) -> CompareExpr:
+        return CompareExpr(left=left, op=str(op), right=right)  # type: ignore[arg-type]
+
     def col_expr(self, name: str, col_round: int | None = None) -> ColExpr:
         return ColExpr(name=name, round=col_round)
 
     def col_name(self, token: Token) -> str:
         return str(token)
 
-    def col_round(self, round_num: int) -> int:
-        return round_num
+    def col_round(self, round_expr: IntLiteral | CurrentRoundExpr) -> int:
+        return round_expr.value
+
+    def int_atom(self, value: IntLiteral | CurrentRoundExpr) -> IntLiteral | CurrentRoundExpr:
+        return value
+
+    def int_sub(
+        self, left: IntLiteral | CurrentRoundExpr, right: IntLiteral
+    ) -> IntLiteral:
+        result = _int_value(left) - right.value
+        return IntLiteral(value=_positive_int(result))
 
     def current_round_expr(self) -> CurrentRoundExpr:
         return CurrentRoundExpr(value=self._ctx.current_round)
 
-    def str_list(self, *items: str) -> list[str]:
-        return list(items)
+    def pos_int(self, token: Token) -> IntLiteral:
+        return IntLiteral(value=_positive_int(int(token)))
 
-    def int_list(self, *items: int) -> list[int]:
+    def str_list(self, *items: str) -> list[str]:
         return list(items)
 
     def str(self, token: Token) -> str:
         return _unquote(token)
-
-    def pos_int(self, token: Token) -> int:
-        return _positive_int(token)
 
 
 def parse_avl(source: str, *, current_round: int = 1) -> Rule:

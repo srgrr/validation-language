@@ -1,7 +1,8 @@
-import csv
 import re
 from dataclasses import dataclass
 from pathlib import Path
+
+import polars as pl
 
 ROUND_CSV_PATTERN = re.compile(r"^round_(\d+)\.csv$")
 
@@ -29,6 +30,10 @@ def discover_round_csvs(folder: Path) -> list[RoundCsv]:
     return rounds
 
 
-def load_round_csv(path: Path) -> list[dict[str, str]]:
-    with path.open(newline="", encoding="utf-8") as f:
-        return list(csv.DictReader(f))
+def load_round_csv(path: Path) -> pl.DataFrame:
+    return pl.read_csv(path)
+
+
+def load_rounds(folder: Path) -> list[tuple[RoundCsv, pl.DataFrame]]:
+    """Discover and load all round CSVs as Polars DataFrames."""
+    return [(r, load_round_csv(r.path)) for r in discover_round_csvs(folder)]
