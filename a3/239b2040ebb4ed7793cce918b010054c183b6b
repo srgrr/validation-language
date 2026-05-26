@@ -1,0 +1,70 @@
+tests/test_evaluator.py
+  s_03d3dd6cee7a09::t_00fad871cc1658 34
+tests/test_string_literals.py
+  s_03d3dd6cee7a09::t_1c321aed293ace 1-59,61
+  s_03d3dd6cee7a09::t_58335e099aad1a 60
+pyproject.toml
+  s_03d3dd6cee7a09::t_3ccbf0564ff173 24-26
+notebooks/validation_demo.py
+  s_03d3dd6cee7a09::t_bc519c896e9a4e 81,85,104-106,186-192
+  s_03d3dd6cee7a09::t_3e4d680009ddab 82-84,86-102
+  s_03d3dd6cee7a09::t_8ace4de5675a6d 50-51,53-55,57-58
+  s_03d3dd6cee7a09::t_6edaef63baa2ec 103
+  s_03d3dd6cee7a09::t_fe1f1e152ad168 18,20-21,23-26,28,30,32,35
+  s_03d3dd6cee7a09::t_19cc1ce4422cf9 161-175,183-185
+  s_03d3dd6cee7a09::t_4d32099d1ca7ad 193-196
+  s_03d3dd6cee7a09::t_08e675258dae10 1-17,19,22,27,29,31,33-34,36-49,52,56,59-80,107-139,143,146,155-159,176-179,182
+  s_03d3dd6cee7a09::t_73fece9c8a8668 140-142,144-145,147-154
+  s_03d3dd6cee7a09::t_8bc845d41f8f5d 160,180-181
+README.md
+  s_03d3dd6cee7a09::t_92d893dc56afb6 57
+  s_03d3dd6cee7a09::t_269be6c328e660 172
+  s_03d3dd6cee7a09::t_724c8d60f06902 52,54-55,58-68
+  s_03d3dd6cee7a09::t_f6227c09e7d252 133,135-136,140-141,144,147-148,150-153
+  s_03d3dd6cee7a09::t_53f13c23c64f16 131-132,134,137-139,142-143,145-146,149,154,158-159
+data/rounds/round_1.csv
+  s_03d3dd6cee7a09::t_9d95c969cd1764 2-101
+  s_03d3dd6cee7a09::t_db6655a5cb39f4 1
+src/validation_language_mockup/parser.py
+  s_03d3dd6cee7a09::t_9e7b2479d2b77c 98-100
+  s_03d3dd6cee7a09::t_bb04fc4bcc1c2b 125-127
+  s_03d3dd6cee7a09::t_668d3e78c22837 8
+  s_03d3dd6cee7a09::t_1a79dc7a8a0ea1 21
+src/validation_language_mockup/grammar/validation.avl.lark
+  s_03d3dd6cee7a09::t_bd46b3553bd16d 56-57
+  s_03d3dd6cee7a09::t_11c11201ea2503 21
+  s_03d3dd6cee7a09::t_10b0a8fb3b465a 34
+  s_03d3dd6cee7a09::t_f84718b29cee12 69-70
+data/rounds/round_2.csv
+  s_03d3dd6cee7a09::t_db6655a5cb39f4 1-101
+src/validation_language_mockup/ast.py
+  s_03d3dd6cee7a09::t_ddacfc66fb40ee 17
+  s_03d3dd6cee7a09::t_1c3bdb8e11390f 65
+  s_03d3dd6cee7a09::t_497aa69502613e 66-69
+  s_03d3dd6cee7a09::t_cc74b81da9b6db 85-88
+  s_03d3dd6cee7a09::t_a34f09cdc037e4 8,21
+src/validation_language_mockup/evaluator.py
+  s_03d3dd6cee7a09::t_456e41827ca0e4 93-94
+  s_03d3dd6cee7a09::t_9b80a1a5061e57 6,53,55-57,61-66,72,74-75,78-79,85-86,99-109,143,155-156,231-241,247
+  s_03d3dd6cee7a09::t_c852a998faac0c 20
+  s_03d3dd6cee7a09::t_09a7982ac0ffe4 119-120
+tests/test_all_equal.py
+  s_03d3dd6cee7a09::t_ddbc4d5307c9af 1-84,87-91,93-117
+  s_03d3dd6cee7a09::t_cf9650f211afdb 85-86,92
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.1",
+  "base_commit_sha": "a3239b2040ebb4ed7793cce918b010054c183b6b",
+  "prompts": {},
+  "sessions": {
+    "s_03d3dd6cee7a09": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "9b526245-6c58-4b38-8066-7ed8bb555877",
+        "model": "default"
+      },
+      "human_author": "Sergio RG <sergio.guasch@archlet.ch>"
+    }
+  }
+}
