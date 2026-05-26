@@ -1,11 +1,101 @@
 Item,Supplier,Description,Price,Origin,Destination
-Widget A,Acme Corp,Steel mounting bracket v2,13.10,Barcelona,Barcelona
-Widget B,Global Parts,Rubber gasket kit,9.00,Madrid,Madrid
-Widget C,North Supply,Aluminum heat sink,23.50,Girona,Girona
-Widget D,Acme Corp,Plastic housing cover,6.45,Barcelona,Barcelona
-Widget E,Global Parts,Copper wire spool,19.25,Madrid,Madrid
-Widget F,North Supply,Stainless bolt set,11.80,Girona,Girona
-Widget G,Acme Corp,Ceramic insulator,9.90,Barcelona,Barcelona
-Widget H,Global Parts,Silicone sealant,7.50,Madrid,Madrid
-Widget I,North Supply,Carbon fiber sheet,31.75,Girona,Girona
-Widget J,Acme Corp,Nylon cable tie pack,5.00,Barcelona,Barcelona
+Widget 1,Global Parts,Rubber gasket kit,5.2,Barcelona,Girona
+Widget 2,North Supply,Aluminum heat sink,6.1,Madrid,Madrid
+Widget 3,Acme Corp,Plastic housing cover,7.0,Girona,Barcelona
+Widget 4,Global Parts,Copper wire spool,7.9,Barcelona,Girona
+Widget 5,North Supply,Stainless bolt set,8.55,Madrid,Madrid
+Widget 6,Acme Corp,Ceramic insulator,9.45,Girona,Barcelona
+Widget 7,Global Parts,Silicone sealant v2,10.35,Barcelona,Girona
+Widget 8,North Supply,Carbon fiber sheet,11.25,Madrid,Girona
+Widget 9,Acme Corp,Nylon cable tie pack,12.15,Girona,Barcelona
+Widget 10,Global Parts,Steel mounting bracket,13.15,Barcelona,Girona
+Widget 11,North Supply,Rubber gasket kit,14.05,Madrid,Madrid
+Widget 12,Acme Corp,Aluminum heat sink,14.95,Girona,Barcelona
+Widget 13,Global Parts,Plastic housing cover,15.85,Barcelona,Girona
+Widget 14,North Supply,Copper wire spool v2,16.75,Madrid,Madrid
+Widget 15,Acme Corp,Stainless bolt set,17.4,Girona,Barcelona
+Widget 16,Global Parts,Ceramic insulator,18.3,Barcelona,Girona
+Widget 17,North Supply,Silicone sealant,19.2,Madrid,Madrid
+Widget 18,Acme Corp,Carbon fiber sheet,20.1,Girona,Barcelona
+Widget 19,Global Parts,Nylon cable tie pack,21.0,Barcelona,Girona
+Widget 20,North Supply,Steel mounting bracket,22.0,Madrid,Girona
+Widget 21,Acme Corp,Rubber gasket kit v2,22.9,Girona,Barcelona
+Widget 22,Global Parts,Aluminum heat sink,23.8,Barcelona,Girona
+Widget 23,North Supply,Plastic housing cover,24.7,Madrid,Madrid
+Widget 24,Acme Corp,Copper wire spool,25.6,Girona,Barcelona
+Widget 25,Global Parts,Stainless bolt set,26.25,Barcelona,Girona
+Widget 26,North Supply,Ceramic insulator,27.15,Madrid,Madrid
+Widget 27,Acme Corp,Silicone sealant,28.05,Girona,Barcelona
+Widget 28,Global Parts,Carbon fiber sheet v2,28.95,Barcelona,Girona
+Widget 29,North Supply,Nylon cable tie pack,29.85,Madrid,Madrid
+Widget 30,Acme Corp,Steel mounting bracket,5.35,Girona,Barcelona
+Widget 31,Global Parts,Rubber gasket kit,6.25,Barcelona,Girona
+Widget 32,North Supply,Aluminum heat sink,7.15,Madrid,Girona
+Widget 33,Acme Corp,Plastic housing cover,8.05,Girona,Barcelona
+Widget 34,Global Parts,Copper wire spool,8.95,Barcelona,Girona
+Widget 35,North Supply,Stainless bolt set v2,9.6,Madrid,Madrid
+Widget 36,Acme Corp,Ceramic insulator,10.5,Girona,Barcelona
+Widget 37,Global Parts,Silicone sealant,11.4,Barcelona,Girona
+Widget 38,North Supply,Carbon fiber sheet,12.3,Madrid,Madrid
+Widget 39,Acme Corp,Nylon cable tie pack,13.2,Girona,Barcelona
+Widget 40,Global Parts,Steel mounting bracket,14.2,Barcelona,Girona
+Widget 41,North Supply,Rubber gasket kit,15.1,Madrid,Madrid
+Widget 42,Acme Corp,Aluminum heat sink v2,16.0,Girona,Barcelona
+Widget 43,Global Parts,Plastic housing cover,16.9,Barcelona,Girona
+Widget 44,North Supply,Copper wire spool,17.8,Madrid,Girona
+Widget 45,Acme Corp,Stainless bolt set,18.45,Girona,Barcelona
+Widget 46,Global Parts,Ceramic insulator,19.35,Barcelona,Girona
+Widget 47,North Supply,Silicone sealant,20.25,Madrid,Madrid
+Widget 48,Acme Corp,Carbon fiber sheet,21.15,Girona,Barcelona
+Widget 49,Global Parts,Nylon cable tie pack v2,22.05,Barcelona,Girona
+Widget 50,North Supply,Steel mounting bracket,23.05,Madrid,Madrid
+Widget 51,Acme Corp,Rubber gasket kit,23.95,Girona,Barcelona
+Widget 52,Global Parts,Aluminum heat sink,24.85,Barcelona,Girona
+Widget 53,North Supply,Plastic housing cover,25.75,Madrid,Madrid
+Widget 54,Acme Corp,Copper wire spool,26.65,Girona,Barcelona
+Widget 55,Global Parts,Stainless bolt set,27.3,Barcelona,Girona
+Widget 56,North Supply,Ceramic insulator v2,28.2,Madrid,Girona
+Widget 57,Acme Corp,Silicone sealant,29.1,Girona,Barcelona
+Widget 58,Global Parts,Carbon fiber sheet,30.0,Barcelona,Girona
+Widget 59,North Supply,Nylon cable tie pack,30.9,Madrid,Madrid
+Widget 60,Acme Corp,Steel mounting bracket,6.4,Girona,Barcelona
+Widget 61,Global Parts,Rubber gasket kit,7.3,Barcelona,Girona
+Widget 62,North Supply,Aluminum heat sink,8.2,Madrid,Madrid
+Widget 63,Acme Corp,Plastic housing cover v2,9.1,Girona,Barcelona
+Widget 64,Global Parts,Copper wire spool,10.0,Barcelona,Girona
+Widget 65,North Supply,Stainless bolt set,10.65,Madrid,Madrid
+Widget 66,Acme Corp,Ceramic insulator,11.55,Girona,Barcelona
+Widget 67,Global Parts,Silicone sealant,12.45,Barcelona,Girona
+Widget 68,North Supply,Carbon fiber sheet,13.35,Madrid,Girona
+Widget 69,Acme Corp,Nylon cable tie pack,14.25,Girona,Barcelona
+Widget 70,Global Parts,Steel mounting bracket v2,15.25,Barcelona,Girona
+Widget 71,North Supply,Rubber gasket kit,16.15,Madrid,Madrid
+Widget 72,Acme Corp,Aluminum heat sink,17.05,Girona,Barcelona
+Widget 73,Global Parts,Plastic housing cover,17.95,Barcelona,Girona
+Widget 74,North Supply,Copper wire spool,18.85,Madrid,Madrid
+Widget 75,Acme Corp,Stainless bolt set,19.5,Girona,Barcelona
+Widget 76,Global Parts,Ceramic insulator,20.4,Barcelona,Girona
+Widget 77,North Supply,Silicone sealant v2,21.3,Madrid,Madrid
+Widget 78,Acme Corp,Carbon fiber sheet,22.2,Girona,Barcelona
+Widget 79,Global Parts,Nylon cable tie pack,23.1,Barcelona,Girona
+Widget 80,North Supply,Steel mounting bracket,24.1,Madrid,Girona
+Widget 81,Acme Corp,Rubber gasket kit,25.0,Girona,Barcelona
+Widget 82,Global Parts,Aluminum heat sink,25.9,Barcelona,Girona
+Widget 83,North Supply,Plastic housing cover,26.8,Madrid,Madrid
+Widget 84,Acme Corp,Copper wire spool v2,27.7,Girona,Barcelona
+Widget 85,Global Parts,Stainless bolt set,28.35,Barcelona,Girona
+Widget 86,North Supply,Ceramic insulator,29.25,Madrid,Madrid
+Widget 87,Acme Corp,Silicone sealant,30.15,Girona,Barcelona
+Widget 88,Global Parts,Carbon fiber sheet,31.05,Barcelona,Girona
+Widget 89,North Supply,Nylon cable tie pack,31.95,Madrid,Madrid
+Widget 90,Acme Corp,Steel mounting bracket,7.45,Girona,Barcelona
+Widget 91,Global Parts,Rubber gasket kit v2,8.35,Barcelona,Girona
+Widget 92,North Supply,Aluminum heat sink,9.25,Madrid,Girona
+Widget 93,Acme Corp,Plastic housing cover,10.15,Girona,Barcelona
+Widget 94,Global Parts,Copper wire spool,11.05,Barcelona,Girona
+Widget 95,North Supply,Stainless bolt set,11.7,Madrid,Madrid
+Widget 96,Acme Corp,Ceramic insulator,12.6,Girona,Barcelona
+Widget 97,Global Parts,Silicone sealant,13.5,Barcelona,Girona
+Widget 98,North Supply,Carbon fiber sheet v2,14.4,Madrid,Madrid
+Widget 99,Acme Corp,Nylon cable tie pack,15.3,Girona,Barcelona
+Widget 100,Global Parts,Steel mounting bracket,16.3,Barcelona,Girona

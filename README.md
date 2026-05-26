@@ -49,9 +49,23 @@ GROUP BY
 
 - **Literals:** `ALWAYS` / `TRUE`, `NEVER` / `FALSE`
 - **Boolean ops:** `AND`, `OR`, `NOT`
-- **Comparisons:** `<`, `<=`, `>`, `>=`, `=`, `!=`
+- **Comparisons:** `<`, `<=`, `>`, `>=`, `=`, `!=` — between columns, integers, or quoted strings
 - **Columns:** `COL(name)` — current round; `COL(name, ROUND=N)` — round `N`
+- **Strings:** `"Madrid"` — double-quoted literals for comparisons (e.g. `COL(Origin) = "Barcelona"`)
+- **Integers:** `1`, `42` — numeric literals in comparisons
 - **Round:** `CURRENT_ROUND()` — set by `--current-round`; `CURRENT_ROUND() - 1` in `ROUND=` (resolved at parse time)
+- **ALL_EQUAL:** `ALL_EQUAL(COL(name))` — true when every value of the column is the same within each GROUP BY group (evaluated on rows that passed WHEN)
+
+Example combining column and string comparison:
+
+```text
+WHEN
+    CURRENT_ROUND() > 1
+THEN
+    COL(Price) <= COL(Price, ROUND=CURRENT_ROUND() - 1) AND COL(Destination) != "Barcelona"
+GROUP BY
+    "Item"
+```
 
 ## Evaluation
 
@@ -114,9 +128,35 @@ Violations (8 group(s)):
 
 With `--current-round 1`, `WHEN` is false for every row, so nothing is validated and the run passes.
 
+## Interactive notebook
+
+Explore rules interactively with [marimo](https://marimo.io).
+
+**Recommended** (installs this package from the repo):
+
+```bash
+pip install -e ".[notebook]"
+marimo edit notebooks/validation_demo.py
+# or
+marimo run notebooks/validation_demo.py
+```
+
+From the repo root with [uv](https://docs.astral.sh/uv/):
+
+```bash
+uv sync --extra notebook
+uv run marimo edit notebooks/validation_demo.py
+```
+
+The notebook loads `data/rounds/` and `data/rules.avl` by default. Edit the AVL text area, change the current round, and see compiled Polars expressions plus validation results update reactively.
+
+PEP 723 metadata on the notebook only lists PyPI deps (`lark`, `polars`, `marimo`); the local package is loaded via `src/` on `sys.path`, so isolated `uv run notebooks/validation_demo.py` works without publishing to PyPI.
+
 ## Project layout
 
 ```text
+notebooks/
+  validation_demo.py            # Interactive AVL playground
 src/validation_language_mockup/
   grammar/validation.avl.lark   # Lark grammar
   ast.py                        # Rule AST
@@ -128,6 +168,7 @@ data/
   rounds/                       # Sample CSVs
   rules.avl                     # Sample rule
 ```
+
 
 ## Tests
 

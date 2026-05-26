@@ -5,6 +5,7 @@ from lark import Lark, Token, Transformer, v_args
 from lark.exceptions import VisitError
 
 from validation_language_mockup.ast import (
+    AllEqualExpr,
     BoolAnd,
     BoolExpr,
     BoolFalse,
@@ -17,6 +18,7 @@ from validation_language_mockup.ast import (
     Expr,
     IntLiteral,
     Rule,
+    StringLiteral,
 )
 
 
@@ -93,6 +95,9 @@ class AvlTransformer(Transformer):
     def compare(self, left: Expr, op: Token, right: Expr) -> CompareExpr:
         return CompareExpr(left=left, op=str(op), right=right)  # type: ignore[arg-type]
 
+    def all_equal_expr(self, col: ColExpr) -> AllEqualExpr:
+        return AllEqualExpr(col=col)
+
     def col_expr(self, name: str, col_round: int | None = None) -> ColExpr:
         return ColExpr(name=name, round=col_round)
 
@@ -116,6 +121,9 @@ class AvlTransformer(Transformer):
 
     def pos_int(self, token: Token) -> IntLiteral:
         return IntLiteral(value=_positive_int(int(token)))
+
+    def string_literal(self, token: Token) -> StringLiteral:
+        return StringLiteral(value=_unquote(token))
 
     def str_list(self, *items: str) -> list[str]:
         return list(items)

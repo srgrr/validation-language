@@ -5,7 +5,7 @@ CompareOp = Literal["<", "<=", ">", ">=", "=", "!="]
 
 IntExpr = Union["CurrentRoundExpr", "IntLiteral"]
 
-Expr = Union["ColExpr", "CurrentRoundExpr", "IntLiteral"]
+Expr = Union["ColExpr", "CurrentRoundExpr", "IntLiteral", "StringLiteral"]
 
 BoolExpr = Union[
     "BoolTrue",
@@ -14,9 +14,11 @@ BoolExpr = Union[
     "BoolAnd",
     "BoolOr",
     "CompareExpr",
+    "AllEqualExpr",
     "ColExpr",
     "CurrentRoundExpr",
     "IntLiteral",
+    "StringLiteral",
 ]
 
 
@@ -61,6 +63,13 @@ class ColExpr:
 
 
 @dataclass(frozen=True)
+class AllEqualExpr:
+    """True when all values of the column are equal within each GROUP BY group."""
+
+    col: ColExpr
+
+
+@dataclass(frozen=True)
 class CurrentRoundExpr:
     """CURRENT_ROUND() resolved at parse time."""
 
@@ -70,6 +79,11 @@ class CurrentRoundExpr:
 @dataclass(frozen=True)
 class IntLiteral:
     value: int
+
+
+@dataclass(frozen=True)
+class StringLiteral:
+    value: str
 
 
 @dataclass(frozen=True)

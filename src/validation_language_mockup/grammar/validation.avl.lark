@@ -18,6 +18,7 @@ avl_rule: "WHEN" bool_expr "THEN" bool_expr "GROUP BY" str_list
 
 ?bool_atom: bool_lit
           | compare_expr
+          | all_equal_expr
           | expr
           | "(" bool_expr ")"
 
@@ -30,6 +31,7 @@ compare_expr: compare_operand COMPARE_OP compare_operand   -> compare
 
 compare_operand: expr
                | pos_int
+               | string_literal
 
 COMPARE_OP: LE | GE | NE | LT | GT | EQ
 LE: "<="
@@ -51,6 +53,8 @@ col_name: COL_NAME
 
 current_round_expr: "CURRENT_ROUND" "(" ")"
 
+all_equal_expr: "ALL_EQUAL" "(" col_expr ")"
+
 // INT_EXPR: integer arithmetic resolved at parse time
 ?int_expr: int_atom
          | int_atom "-" pos_int   -> int_sub
@@ -61,6 +65,8 @@ int_atom: pos_int
 str_list: str ("," str)*
 
 str: ESCAPED_STRING
+
+string_literal: ESCAPED_STRING
 
 pos_int: INT
 

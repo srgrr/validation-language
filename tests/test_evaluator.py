@@ -31,7 +31,7 @@ def test_validate_sample_data_round_two() -> None:
 
     result = validate_rule(rule, rounds, current_round=2)
 
-    assert result.when_matched_rows == 10
+    assert result.when_matched_rows == 100
     assert result.violation_rows > 0
     assert not result.passed
     assert "Item" in result.violations.columns

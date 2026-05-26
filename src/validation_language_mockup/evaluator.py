@@ -3,6 +3,7 @@ from dataclasses import dataclass
 import polars as pl
 
 from validation_language_mockup.ast import (
+    AllEqualExpr,
     BoolAnd,
     BoolExpr,
     BoolFalse,
@@ -16,6 +17,7 @@ from validation_language_mockup.ast import (
     Expr,
     IntLiteral,
     Rule,
+    StringLiteral,
 )
 
 _COMPARE_OPS: dict[CompareOp, type] = {
@@ -48,40 +50,63 @@ class ValidationResult:
 
 def compile_rule(rule: Rule, *, current_round: int) -> CompiledRule:
     """Compile WHEN/THEN clauses to Polars expressions."""
+    group_by = list(rule.group_by)
     return CompiledRule(
-        when=compile_bool(rule.when, current_round=current_round),
-        then=compile_bool(rule.then, current_round=current_round),
-        group_by=list(rule.group_by),
+        when=compile_bool(rule.when, current_round=current_round, group_by=group_by),
+        then=compile_bool(rule.then, current_round=current_round, group_by=group_by),
+        group_by=group_by,
     )
 
 
-def compile_bool(expr: BoolExpr, *, current_round: int) -> pl.Expr:
+def compile_bool(
+    expr: BoolExpr,
+    *,
+    current_round: int,
+    group_by: list[str],
+) -> pl.Expr:
     if isinstance(expr, BoolTrue):
         return pl.lit(True)
     if isinstance(expr, BoolFalse):
         return pl.lit(False)
     if isinstance(expr, BoolNot):
-        return ~compile_bool(expr.operand, current_round=current_round)
+        return ~compile_bool(expr.operand, current_round=current_round, group_by=group_by)
     if isinstance(expr, BoolAnd):
-        left = compile_bool(expr.left, current_round=current_round)
-        right = compile_bool(expr.right, current_round=current_round)
+        left = compile_bool(expr.left, current_round=current_round, group_by=group_by)
+        right = compile_bool(expr.right, current_round=current_round, group_by=group_by)
         return left & right
     if isinstance(expr, BoolOr):
-        left = compile_bool(expr.left, current_round=current_round)
-        right = compile_bool(expr.right, current_round=current_round)
+        left = compile_bool(expr.left, current_round=current_round, group_by=group_by)
+        right = compile_bool(expr.right, current_round=current_round, group_by=group_by)
         return left | right
     if isinstance(expr, CompareExpr):
         left = compile_value(expr.left, current_round=current_round)
         right = compile_value(expr.right, current_round=current_round)
         return _COMPARE_OPS[expr.op](left, right)
+    if isinstance(expr, AllEqualExpr):
+        return compile_all_equal(expr, current_round=current_round, group_by=group_by)
     if isinstance(expr, ColExpr):
         return compile_column(expr, current_round=current_round).is_not_null()
     if isinstance(expr, CurrentRoundExpr):
         return pl.lit(expr.value)
     if isinstance(expr, IntLiteral):
         return pl.lit(expr.value)
+    if isinstance(expr, StringLiteral):
+        return pl.lit(expr.value)
     msg = f"unsupported boolean expression: {type(expr).__name__}"
     raise TypeError(msg)
+
+
+def compile_all_equal(
+    expr: AllEqualExpr,
+    *,
+    current_round: int,
+    group_by: list[str],
+) -> pl.Expr:
+    if not group_by:
+        msg = "ALL_EQUAL requires at least one GROUP BY column"
+        raise ValueError(msg)
+    column = compile_column(expr.col, current_round=current_round)
+    return column.n_unique().over(group_by) == 1
 
 
 def compile_value(expr: Expr, *, current_round: int) -> pl.Expr:
@@ -90,6 +115,8 @@ def compile_value(expr: Expr, *, current_round: int) -> pl.Expr:
     if isinstance(expr, CurrentRoundExpr):
         return pl.lit(expr.value)
     if isinstance(expr, IntLiteral):
+        return pl.lit(expr.value)
+    if isinstance(expr, StringLiteral):
         return pl.lit(expr.value)
     msg = f"unsupported value expression: {type(expr).__name__}"
     raise TypeError(msg)
@@ -113,7 +140,7 @@ def referenced_rounds(rule: Rule, *, current_round: int) -> set[int]:
 
 
 def _rounds_in_bool(expr: BoolExpr, *, current_round: int) -> set[int]:
-    if isinstance(expr, (BoolTrue, BoolFalse, CurrentRoundExpr, IntLiteral)):
+    if isinstance(expr, (BoolTrue, BoolFalse, CurrentRoundExpr, IntLiteral, StringLiteral)):
         return set()
     if isinstance(expr, BoolNot):
         return _rounds_in_bool(expr.operand, current_round=current_round)
@@ -125,6 +152,8 @@ def _rounds_in_bool(expr: BoolExpr, *, current_round: int) -> set[int]:
         return _rounds_in_value(expr.left, current_round=current_round) | _rounds_in_value(
             expr.right, current_round=current_round
         )
+    if isinstance(expr, AllEqualExpr):
+        return _rounds_in_col(expr.col, current_round=current_round)
     if isinstance(expr, ColExpr):
         return _rounds_in_col(expr, current_round=current_round)
     return set()
@@ -199,17 +228,23 @@ def validate_rule(
         join_rounds=join_rounds,
     )
 
-    evaluated = df.with_columns(
-        _when=compiled.when,
-        _then=compiled.then,
-    )
-    when_matched = evaluated.filter(pl.col("_when"))
+    when_matched = df.filter(compiled.when)
+    if when_matched.height == 0:
+        return ValidationResult(
+            passed=True,
+            total_rows=df.height,
+            when_matched_rows=0,
+            violation_rows=0,
+            violations=when_matched,
+        )
+
+    when_matched = when_matched.with_columns(_then=compiled.then)
     violations = when_matched.filter(~pl.col("_then"))
 
     if violations.height > 0 and compiled.group_by:
         violations = violations.group_by(compiled.group_by).agg(pl.all().first())
 
-    drop_cols = [c for c in ("_when", "_then") if c in violations.columns]
+    drop_cols = [c for c in ("_then",) if c in violations.columns]
     if drop_cols:
         violations = violations.drop(*drop_cols)
 
