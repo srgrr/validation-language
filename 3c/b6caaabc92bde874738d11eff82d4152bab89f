@@ -1,0 +1,38 @@
+examples/conditional_mandatory_rows/rule.avl
+  s_03d3dd6cee7a09::t_1c0c8f4001c02b 1-7
+examples/all_equal_by_route/rule.avl
+  s_03d3dd6cee7a09::t_4755712b230a4e 1-7
+notebooks/examples_playground.py
+  s_03d3dd6cee7a09::t_45ea97da973cec 58
+  s_03d3dd6cee7a09::t_071fb67e81bb40 1-57,59,61-131,133,138-143
+  s_03d3dd6cee7a09::t_e0cab8e70aa830 60,132,134-137
+examples/conditional_not_nulls/round_1.csv
+  s_03d3dd6cee7a09::t_c6855a041f37d6 1-6
+examples/any_then_all/rule.avl
+  s_03d3dd6cee7a09::t_f8ad80b8f8a02e 1-3,5-6
+  s_03d3dd6cee7a09::t_533c7f06f6a847 4
+examples/conditional_not_nulls/rule.avl
+  s_03d3dd6cee7a09::t_2030a0b21e9aa3 1-7
+examples/all_equal_by_route/round_1.csv
+  s_03d3dd6cee7a09::t_3d03a769cc613a 1-7
+examples/any_then_all/round_1.csv
+  s_03d3dd6cee7a09::t_4d42dfdc6af35c 1-5
+examples/conditional_mandatory_rows/round_1.csv
+  s_03d3dd6cee7a09::t_f50a17ffa847c0 1-7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "3cb6caaabc92bde874738d11eff82d4152bab89f",
+  "prompts": {},
+  "sessions": {
+    "s_03d3dd6cee7a09": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "9b526245-6c58-4b38-8066-7ed8bb555877",
+        "model": "default"
+      },
+      "human_author": "Sergio RG <sergio.guasch@archlet.ch>"
+    }
+  }
+}
