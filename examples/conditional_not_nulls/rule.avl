@@ -1,0 +1,7 @@
+WHEN
+  COL(Description) = "Trans"
+THEN
+  COL(Trans_Time) IS NOT NULL AND COL(Trans_Cost) IS NOT NULL
+GROUP BY
+  "Item"
+

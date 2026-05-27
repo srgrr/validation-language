@@ -1,0 +1,7 @@
+WHEN
+  ALWAYS
+THEN
+  ALL_EQUAL(COL(Price))
+GROUP BY
+  "Origin", "Destination"
+

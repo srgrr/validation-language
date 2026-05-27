@@ -1,0 +1,6 @@
+Item,Description,Trans_Time,Trans_Cost
+A,Trans,2026-01-01,100
+B,Trans,,100
+C,Trans,2026-01-02,
+D,Other,,
+

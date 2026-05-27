@@ -1,0 +1,7 @@
+WHEN
+  COL(Price) IS NOT NULL
+THEN
+  COL(Description) IS NOT NULL
+GROUP BY
+  "Item"
+

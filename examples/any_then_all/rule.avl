@@ -1,0 +1,6 @@
+WHEN
+  ANY(COL(Description) = "Something" AND COL(Price) IS NOT NULL)
+THEN
+  COL(SomethingPrice) IS NOT NULL
+GROUP BY
+  "Item"
