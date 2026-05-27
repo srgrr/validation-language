@@ -1,0 +1,19 @@
+AGENTS.md
+  s_03d3dd6cee7a09::t_baaad8a1e83d57 1-199
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "318145062b2790eb1821fe2b128161314a843a13",
+  "prompts": {},
+  "sessions": {
+    "s_03d3dd6cee7a09": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "9b526245-6c58-4b38-8066-7ed8bb555877",
+        "model": "default"
+      },
+      "human_author": "Sergio RG <sergio.guasch@archlet.ch>"
+    }
+  }
+}
