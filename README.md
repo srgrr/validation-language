@@ -51,10 +51,12 @@ GROUP BY
 - **Boolean ops:** `AND`, `OR`, `NOT`
 - **Comparisons:** `<`, `<=`, `>`, `>=`, `=`, `!=` — between columns, integers, or quoted strings
 - **Columns:** `COL(name)` — current round; `COL(name, ROUND=N)` — round `N`
+- **Null checks:** `COL(name) IS NULL` and `COL(name) IS NOT NULL`
 - **Strings:** `"Madrid"` — double-quoted literals for comparisons (e.g. `COL(Origin) = "Barcelona"`)
 - **Integers:** `1`, `42` — numeric literals in comparisons
 - **Round:** `CURRENT_ROUND()` — set by `--current-round`; `CURRENT_ROUND() - 1` in `ROUND=` (resolved at parse time)
 - **ALL_EQUAL:** `ALL_EQUAL(COL(name))` — true when every value of the column is the same within each GROUP BY group (evaluated on rows that passed WHEN)
+- **ANY / ALL:** `ANY(expr1, expr2, ...)` and `ALL(expr1, expr2, ...)` — boolean conditions over multiple expressions (evaluated like `OR` / `AND`)
 
 Example combining column and string comparison:
 

@@ -15,6 +15,9 @@ BoolExpr = Union[
     "BoolOr",
     "CompareExpr",
     "AllEqualExpr",
+    "AnyExpr",
+    "AllExpr",
+    "IsNullExpr",
     "ColExpr",
     "CurrentRoundExpr",
     "IntLiteral",
@@ -67,6 +70,28 @@ class AllEqualExpr:
     """True when all values of the column are equal within each GROUP BY group."""
 
     col: ColExpr
+
+
+@dataclass(frozen=True)
+class IsNullExpr:
+    """True when a column is (not) null."""
+
+    col: ColExpr
+    negated: bool = False
+
+
+@dataclass(frozen=True)
+class AnyExpr:
+    """True when any of the given boolean expressions are true."""
+
+    operands: list[BoolExpr]
+
+
+@dataclass(frozen=True)
+class AllExpr:
+    """True when all of the given boolean expressions are true."""
+
+    operands: list[BoolExpr]
 
 
 @dataclass(frozen=True)

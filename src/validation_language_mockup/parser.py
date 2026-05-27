@@ -5,7 +5,10 @@ from lark import Lark, Token, Transformer, v_args
 from lark.exceptions import VisitError
 
 from validation_language_mockup.ast import (
+    AllExpr,
     AllEqualExpr,
+    AnyExpr,
+    IsNullExpr,
     BoolAnd,
     BoolExpr,
     BoolFalse,
@@ -97,6 +100,21 @@ class AvlTransformer(Transformer):
 
     def all_equal_expr(self, col: ColExpr) -> AllEqualExpr:
         return AllEqualExpr(col=col)
+
+    def bool_expr_list(self, *items: BoolExpr) -> list[BoolExpr]:
+        return list(items)
+
+    def any_expr(self, operands: list[BoolExpr]) -> AnyExpr:
+        return AnyExpr(operands=operands)
+
+    def all_expr(self, operands: list[BoolExpr]) -> AllExpr:
+        return AllExpr(operands=operands)
+
+    def is_null_expr(self, col: ColExpr) -> IsNullExpr:
+        return IsNullExpr(col=col, negated=False)
+
+    def is_not_null_expr(self, col: ColExpr) -> IsNullExpr:
+        return IsNullExpr(col=col, negated=True)
 
     def col_expr(self, name: str, col_round: int | None = None) -> ColExpr:
         return ColExpr(name=name, round=col_round)

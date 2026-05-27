@@ -19,6 +19,8 @@ avl_rule: "WHEN" bool_expr "THEN" bool_expr "GROUP BY" str_list
 ?bool_atom: bool_lit
           | compare_expr
           | all_equal_expr
+          | any_all_expr
+          | is_null_expr
           | expr
           | "(" bool_expr ")"
 
@@ -54,6 +56,14 @@ col_name: COL_NAME
 current_round_expr: "CURRENT_ROUND" "(" ")"
 
 all_equal_expr: "ALL_EQUAL" "(" col_expr ")"
+
+is_null_expr: col_expr "IS" "NULL" -> is_null_expr
+             | col_expr "IS" "NOT" "NULL" -> is_not_null_expr
+
+any_all_expr: "ANY" "(" bool_expr_list ")" -> any_expr
+            | "ALL" "(" bool_expr_list ")" -> all_expr
+
+bool_expr_list: bool_expr ("," bool_expr)*
 
 // INT_EXPR: integer arithmetic resolved at parse time
 ?int_expr: int_atom

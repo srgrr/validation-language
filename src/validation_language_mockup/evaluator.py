@@ -4,12 +4,15 @@ import polars as pl
 
 from validation_language_mockup.ast import (
     AllEqualExpr,
+    AllExpr,
+    IsNullExpr,
     BoolAnd,
     BoolExpr,
     BoolFalse,
     BoolNot,
     BoolOr,
     BoolTrue,
+    AnyExpr,
     ColExpr,
     CompareExpr,
     CompareOp,
@@ -84,6 +87,27 @@ def compile_bool(
         return _COMPARE_OPS[expr.op](left, right)
     if isinstance(expr, AllEqualExpr):
         return compile_all_equal(expr, current_round=current_round, group_by=group_by)
+    if isinstance(expr, AnyExpr):
+        if not expr.operands:
+            return pl.lit(False)
+        compiled = compile_bool(expr.operands[0], current_round=current_round, group_by=group_by)
+        for operand in expr.operands[1:]:
+            compiled = compiled | compile_bool(
+                operand, current_round=current_round, group_by=group_by
+            )
+        return compiled
+    if isinstance(expr, AllExpr):
+        if not expr.operands:
+            return pl.lit(True)
+        compiled = compile_bool(expr.operands[0], current_round=current_round, group_by=group_by)
+        for operand in expr.operands[1:]:
+            compiled = compiled & compile_bool(
+                operand, current_round=current_round, group_by=group_by
+            )
+        return compiled
+    if isinstance(expr, IsNullExpr):
+        col_expr = compile_column(expr.col, current_round=current_round)
+        return col_expr.is_not_null() if expr.negated else col_expr.is_null()
     if isinstance(expr, ColExpr):
         return compile_column(expr, current_round=current_round).is_not_null()
     if isinstance(expr, CurrentRoundExpr):
@@ -153,6 +177,18 @@ def _rounds_in_bool(expr: BoolExpr, *, current_round: int) -> set[int]:
             expr.right, current_round=current_round
         )
     if isinstance(expr, AllEqualExpr):
+        return _rounds_in_col(expr.col, current_round=current_round)
+    if isinstance(expr, AnyExpr):
+        rounds: set[int] = set()
+        for operand in expr.operands:
+            rounds |= _rounds_in_bool(operand, current_round=current_round)
+        return rounds
+    if isinstance(expr, AllExpr):
+        rounds: set[int] = set()
+        for operand in expr.operands:
+            rounds |= _rounds_in_bool(operand, current_round=current_round)
+        return rounds
+    if isinstance(expr, IsNullExpr):
         return _rounds_in_col(expr.col, current_round=current_round)
     if isinstance(expr, ColExpr):
         return _rounds_in_col(expr, current_round=current_round)
