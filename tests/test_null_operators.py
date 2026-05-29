@@ -1,10 +1,8 @@
 from __future__ import annotations
 
 import polars as pl
-import pytest
 
 from validation_language_mockup.ast import ColExpr, IsNullExpr
-from validation_language_mockup.avl import parse_avl_file
 from validation_language_mockup.evaluator import validate_rule
 from validation_language_mockup.parser import parse_avl
 
@@ -56,7 +54,7 @@ GROUP BY
 """
     )
 
-    result = validate_rule(rule, {1: df}, current_round=1)
+    result = validate_rule(rule, df)
     assert result.passed is False
     assert result.when_matched_rows == 2
     assert result.violation_rows == 1
@@ -76,7 +74,7 @@ GROUP BY
 """
     )
 
-    result = validate_rule(rule, {1: df}, current_round=1)
+    result = validate_rule(rule, df)
     assert result.passed is False
     assert result.when_matched_rows == 2
     assert result.violation_rows == 1

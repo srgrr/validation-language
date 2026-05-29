@@ -3,58 +3,57 @@ from pathlib import Path
 import polars as pl
 
 from validation_language_mockup.avl import parse_avl_file
+from validation_language_mockup.data import load_csv
 from validation_language_mockup.evaluator import (
     compile_rule,
     validate_rule,
 )
-from validation_language_mockup.rounds import load_rounds
 
-PRICE_RULE = Path("data/rules.avl")
+SAMPLE_RULE = Path("data/rules.avl")
+SAMPLE_CSV = Path("data/sample.csv")
 
 
-def test_compile_price_rule_expressions() -> None:
-    rule = parse_avl_file(PRICE_RULE, current_round=2)
-    compiled = compile_rule(rule, current_round=2)
+def test_compile_barcelona_rule_expressions() -> None:
+    rule = parse_avl_file(SAMPLE_RULE)
+    compiled = compile_rule(rule)
 
-    df = pl.DataFrame({"Price": [10.0], "Price__r1": [12.0]})
+    df = pl.DataFrame({"Origin": ["Barcelona"], "Destination": ["Madrid"]})
     assert df.select(compiled.when).item() is True
     assert df.select(compiled.then).item() is True
 
-    df_fail = pl.DataFrame({"Price": [13.0], "Price__r1": [12.0]})
+    df_fail = pl.DataFrame({"Origin": ["Barcelona"], "Destination": ["Barcelona"]})
+    assert df_fail.select(compiled.when).item() is True
     assert df_fail.select(compiled.then).item() is False
 
 
-def test_validate_sample_data_round_two() -> None:
-    loaded = load_rounds(Path("data/rounds"))
-    rounds = {r.number: df for r, df in loaded}
-    rule = parse_avl_file(PRICE_RULE, current_round=2)
+def test_validate_sample_data() -> None:
+    df = load_csv(SAMPLE_CSV)
+    rule = parse_avl_file(SAMPLE_RULE)
 
-    result = validate_rule(rule, rounds, current_round=2)
+    result = validate_rule(rule, df)
 
-    assert result.when_matched_rows == 100
+    assert result.when_matched_rows > 0
     assert result.violation_rows > 0
     assert not result.passed
     assert "Item" in result.violations.columns
 
 
-def test_validate_skipped_on_round_one() -> None:
+def test_validate_skipped_when_no_rows_match() -> None:
     from validation_language_mockup.parser import parse_avl
 
-    loaded = load_rounds(Path("data/rounds"))
-    rounds = {r.number: df for r, df in loaded}
-    rule_round_one = parse_avl(
+    df = load_csv(SAMPLE_CSV)
+    rule = parse_avl(
         """\
 WHEN
-    CURRENT_ROUND() > 1
+    COL(Origin) = "Nonexistent"
 THEN
-    TRUE
+    FALSE
 GROUP BY
     "Item"
-""",
-        current_round=1,
+"""
     )
 
-    result = validate_rule(rule_round_one, rounds, current_round=1)
+    result = validate_rule(rule, df)
 
     assert result.passed
     assert result.when_matched_rows == 0

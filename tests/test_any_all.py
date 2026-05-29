@@ -1,6 +1,5 @@
 import polars as pl
 
-from validation_language_mockup.avl import parse_avl
 from validation_language_mockup.evaluator import validate_rule
 from validation_language_mockup.parser import parse_avl as parse_avl_rule
 
@@ -19,7 +18,7 @@ GROUP BY
 """
     )
 
-    result = validate_rule(rule, {1: df}, current_round=1)
+    result = validate_rule(rule, df)
 
     assert result.passed is False
     assert result.when_matched_rows == 2
@@ -46,7 +45,7 @@ GROUP BY
 """
     )
 
-    result = validate_rule(rule, {1: df}, current_round=1)
+    result = validate_rule(rule, df)
 
     assert result.passed is True
     assert result.when_matched_rows == 1

@@ -27,7 +27,6 @@ def test_all_equal_requires_group_by_at_compile() -> None:
     with pytest.raises(ValueError, match="GROUP BY"):
         compile_all_equal(
             AllEqualExpr(col=ColExpr(name="Origin")),
-            current_round=1,
             group_by=[],
         )
 
@@ -50,7 +49,7 @@ GROUP BY
     "Item"
 """
     )
-    result = validate_rule(rule, {1: df}, current_round=1)
+    result = validate_rule(rule, df)
     assert result.passed
     assert result.when_matched_rows == 3
 
@@ -73,7 +72,7 @@ GROUP BY
     "Item"
 """
     )
-    result = validate_rule(rule, {1: df}, current_round=1)
+    result = validate_rule(rule, df)
     assert not result.passed
     assert result.violation_rows == 1
 
@@ -96,7 +95,7 @@ GROUP BY
     "Item"
 """
     )
-    result = validate_rule(rule, {1: df}, current_round=1)
+    result = validate_rule(rule, df)
     assert result.passed
     assert result.when_matched_rows == 2
 
@@ -112,6 +111,6 @@ GROUP BY
     "Item"
 """
     )
-    compiled = compile_rule(rule, current_round=1)
+    compiled = compile_rule(rule)
     df = pl.DataFrame({"Item": ["A", "A"], "Origin": ["X", "Y"]})
     assert df.select(compiled.then).to_series().to_list() == [False, False]

@@ -43,17 +43,11 @@ LT: "<"
 GT: ">"
 EQ: "="
 
-// EXPR: column reference or current round
 ?expr: col_expr
-     | current_round_expr
 
-col_expr: "COL" "(" col_name col_round? ")"
-
-col_round: "," "ROUND" "=" int_expr
+col_expr: "COL" "(" col_name ")"
 
 col_name: COL_NAME
-
-current_round_expr: "CURRENT_ROUND" "(" ")"
 
 all_equal_expr: "ALL_EQUAL" "(" col_expr ")"
 
@@ -64,13 +58,6 @@ any_all_expr: "ANY" "(" bool_expr_list ")" -> any_expr
             | "ALL" "(" bool_expr_list ")" -> all_expr
 
 bool_expr_list: bool_expr ("," bool_expr)*
-
-// INT_EXPR: integer arithmetic resolved at parse time
-?int_expr: int_atom
-         | int_atom "-" pos_int   -> int_sub
-
-int_atom: pos_int
-        | current_round_expr
 
 str_list: str ("," str)*
 

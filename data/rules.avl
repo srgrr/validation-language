@@ -1,6 +1,6 @@
 WHEN
-    CURRENT_ROUND() > 1
+    COL(Origin) = "Barcelona"
 THEN
-    COL(Price) <= COL(Price, ROUND=CURRENT_ROUND() - 1)
+    COL(Destination) != "Barcelona"
 GROUP BY
     "Item"

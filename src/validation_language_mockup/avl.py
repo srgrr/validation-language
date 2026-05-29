@@ -20,6 +20,6 @@ def load_avl(path: Path) -> AvlFile:
     return AvlFile(path=path, source=path.read_text(encoding="utf-8"))
 
 
-def parse_avl_file(path: Path, *, current_round: int = 1) -> Rule:
+def parse_avl_file(path: Path) -> Rule:
     """Load and parse an .avl file."""
-    return parse_avl(load_avl(path).source, current_round=current_round)
+    return parse_avl(load_avl(path).source)

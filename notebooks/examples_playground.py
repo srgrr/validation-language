@@ -61,7 +61,7 @@ def _(example_picker, examples, mo):
 
     example_dir = examples[example_picker.value]
     rule_path = example_dir / "rule.avl"
-    csv_path = example_dir / "round_1.csv"
+    csv_path = example_dir / "data.csv"
     return csv_path, example_dir, rule_path
 
 
@@ -103,8 +103,8 @@ def _(df, mo, rule_editor):
 
     source = rule_editor.value
     try:
-        rule = parse_avl(source, current_round=1)
-        result = validate_rule(rule, {1: df}, current_round=1)
+        rule = parse_avl(source)
+        result = validate_rule(rule, df)
         error = None
     except (ValueError, TypeError, LarkError) as exc:
         rule = None

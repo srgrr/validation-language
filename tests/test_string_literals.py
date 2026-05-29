@@ -2,9 +2,9 @@ from pathlib import Path
 
 import polars as pl
 
+from validation_language_mockup.data import load_csv
 from validation_language_mockup.evaluator import compile_rule, validate_rule
 from validation_language_mockup.parser import parse_avl
-from validation_language_mockup.rounds import load_rounds
 
 
 def test_parse_string_literal_comparison() -> None:
@@ -34,17 +34,15 @@ THEN
     COL(Origin) = "Madrid"
 GROUP BY
     "Item"
-""",
-        current_round=1,
+"""
     )
-    compiled = compile_rule(rule, current_round=1)
+    compiled = compile_rule(rule)
     df = pl.DataFrame({"Origin": ["Madrid", "Barcelona"]})
     assert df.select(compiled.then).to_series().to_list() == [True, False]
 
 
 def test_validate_origin_barcelona() -> None:
-    loaded = load_rounds(Path("data/rounds"))
-    rounds = {r.number: df for r, df in loaded}
+    df = load_csv(Path("data/sample.csv"))
     rule = parse_avl(
         """\
 WHEN
@@ -53,9 +51,8 @@ THEN
     COL(Origin) = "Barcelona" OR COL(Destination) = "Girona"
 GROUP BY
     "Item"
-""",
-        current_round=1,
+"""
     )
-    result = validate_rule(rule, rounds, current_round=1)
+    result = validate_rule(rule, df)
     assert result.when_matched_rows == 100
     assert result.violation_rows > 0

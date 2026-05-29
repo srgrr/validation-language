@@ -30,19 +30,17 @@ def _():
 
 @app.cell
 def _(root):
-    rounds_dir = root / "data" / "rounds"
+    csv_path = root / "data" / "sample.csv"
     default_avl = (root / "data" / "rules.avl").read_text(encoding="utf-8")
-    return default_avl, rounds_dir
+    return csv_path, default_avl
 
 
 @app.cell
-def _(rounds_dir):
-    from validation_language_mockup.rounds import load_rounds
+def _(csv_path):
+    from validation_language_mockup.data import load_csv
 
-    loaded = load_rounds(rounds_dir)
-    rounds = {r.number: df for r, df in loaded}
-    round_options = sorted(rounds.keys())
-    return load_rounds, loaded, round_options, rounds
+    df = load_csv(csv_path)
+    return df, load_csv
 
 
 @app.cell
@@ -50,17 +48,16 @@ def _(mo):
     mo.md("""
     # AVL validation playground
 
-    Edit the rule below and pick a **current round**. The notebook parses the AVL,
-    compiles **WHEN** / **THEN** to Polars expressions, joins rounds on **GROUP BY**
-    keys, and reports violations.
+    Edit the rule below. The notebook parses the AVL, compiles **WHEN** / **THEN**
+    to Polars expressions, and reports violations.
 
-    Sample CSVs: `data/rounds/round_1.csv`, `round_2.csv`.
+    Sample CSV: `data/sample.csv`.
     """)
     return
 
 
 @app.cell
-def _(default_avl, mo, round_options):
+def _(default_avl, mo):
     avl_editor = mo.ui.text_area(
         value=default_avl,
         label="AVL rule",
@@ -68,17 +65,12 @@ def _(default_avl, mo, round_options):
         rows=14,
         debounce=True,
     )
-    current_round = mo.ui.dropdown(
-        options={str(n): n for n in round_options},
-        value=str(round_options[-1]) if round_options else "1",
-        label="Current round (CURRENT_ROUND())",
-    )
-    mo.vstack([avl_editor, current_round])
-    return avl_editor, current_round
+    avl_editor
+    return (avl_editor,)
 
 
 @app.cell
-def _(avl_editor, current_round, error, result, mo):
+def _(avl_editor, error, mo, result):
     if error:
         failed_rows_view = mo.callout(
             mo.md(f"**Parse / compile error:** `{error}`"), kind="danger"
@@ -97,33 +89,36 @@ def _(avl_editor, current_round, error, result, mo):
                 mo.callout(mo.md(status_text), kind=status_kind),
                 mo.md("_No violations._")
                 if result.passed
-                else mo.vstack([mo.md("### Violations"), mo.ui.table(result.violations.to_dicts())]),
+                else mo.vstack(
+                    [
+                        mo.md("### Violations"),
+                        mo.ui.table(result.violations.to_dicts()),
+                    ]
+                ),
             ]
         )
-    mo.vstack([avl_editor, current_round, failed_rows_view])
+    mo.vstack([avl_editor, failed_rows_view])
 
 
 @app.cell
-def _(loaded, mo):
-    round_tabs = mo.ui.tabs(
-        {f"Round {r.number}": mo.ui.table(df) for r, df in loaded}
-    )
-    return (round_tabs,)
+def _(df, mo):
+    mo.md("### CSV data")
+    mo.ui.table(df.to_dicts())
 
 
 @app.cell
-def _(avl_editor, current_round, mo, rounds):
+def _(avl_editor, df, mo):
     from lark.exceptions import LarkError
+
     from validation_language_mockup.evaluator import compile_rule, validate_rule
     from validation_language_mockup.parser import parse_avl
 
-    cr = int(current_round.value)
     source = avl_editor.value
 
     try:
-        rule = parse_avl(source, current_round=cr)
-        compiled = compile_rule(rule, current_round=cr)
-        result = validate_rule(rule, rounds, current_round=cr)
+        rule = parse_avl(source)
+        compiled = compile_rule(rule)
+        result = validate_rule(rule, df)
         error = None
     except (ValueError, LarkError, TypeError) as exc:
         rule = None
@@ -131,18 +126,18 @@ def _(avl_editor, current_round, mo, rounds):
         result = None
         error = str(exc)
 
-    return compile_rule, compiled, cr, error, result, rule, source, validate_rule
+    return compile_rule, compiled, error, result, rule, source, validate_rule
 
 
 @app.cell
-def _(compiled, cr, error, mo, rule):
+def _(compiled, error, mo, rule):
     if error:
         compiled_view = mo.callout(
             mo.md(f"**Parse / compile error:** `{error}`"), kind="danger"
         )
     elif rule is not None:
         compiled_view = mo.md(f"""
-        ### Compiled (current round = {cr})
+        ### Compiled
 
         - **GROUP BY:** {", ".join(rule.group_by)}
         - **WHEN:** `{compiled.when}`
@@ -157,7 +152,6 @@ def _(compiled, cr, error, mo, rule):
 @app.cell
 def _(error, mo, result):
     if error or result is None:
-        # Keep notebook layout stable; violations panel below will show an appropriate message.
         kind, status = ("idle", "—")
     else:
         status = "PASSED" if result.passed else "FAILED"
@@ -173,23 +167,6 @@ def _(error, mo, result):
             kind=kind,
         )
     kind, status
-
-
-@app.cell
-def _(error, mo, result):
-    # Violations are rendered directly below the AVL textbox in the editor cell.
-    # This cell intentionally stays empty to avoid duplicate/blocked rendering.
-    if error or result is None:
-        None
-    else:
-        None
-
-
-@app.cell
-def _(round_tabs, mo):
-    mo.md("### Round data")
-    round_tabs
-    return
 
 
 if __name__ == "__main__":

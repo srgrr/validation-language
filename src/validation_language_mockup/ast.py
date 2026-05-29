@@ -3,9 +3,7 @@ from typing import Literal, Union
 
 CompareOp = Literal["<", "<=", ">", ">=", "=", "!="]
 
-IntExpr = Union["CurrentRoundExpr", "IntLiteral"]
-
-Expr = Union["ColExpr", "CurrentRoundExpr", "IntLiteral", "StringLiteral"]
+Expr = Union["ColExpr", "IntLiteral", "StringLiteral"]
 
 BoolExpr = Union[
     "BoolTrue",
@@ -19,7 +17,6 @@ BoolExpr = Union[
     "AllExpr",
     "IsNullExpr",
     "ColExpr",
-    "CurrentRoundExpr",
     "IntLiteral",
     "StringLiteral",
 ]
@@ -62,7 +59,6 @@ class CompareExpr:
 @dataclass(frozen=True)
 class ColExpr:
     name: str
-    round: int | None = None
 
 
 @dataclass(frozen=True)
@@ -92,13 +88,6 @@ class AllExpr:
     """True when all of the given boolean expressions are true."""
 
     operands: list[BoolExpr]
-
-
-@dataclass(frozen=True)
-class CurrentRoundExpr:
-    """CURRENT_ROUND() resolved at parse time."""
-
-    value: int
 
 
 @dataclass(frozen=True)
