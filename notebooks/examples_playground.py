@@ -99,34 +99,40 @@ def _(csv_path, mo):
 def _(df, mo, rule_editor):
     from lark.exceptions import LarkError
 
-    from validation_language_mockup.evaluator import compile_rule, validate_rule
+    from validation_language_mockup.evaluator import (
+        compile_rule,
+        format_validation_pipeline,
+        validate_rule,
+    )
     from validation_language_mockup.parser import parse_avl
 
     source = rule_editor.value
     try:
         rule = parse_avl(source)
         compiled = compile_rule(rule)
+        pipeline = format_validation_pipeline(compiled)
         result = validate_rule(rule, df)
         error = None
     except (ValueError, TypeError, LarkError) as exc:
         rule = None
         compiled = None
+        pipeline = None
         result = None
         error = str(exc)
 
-    return compiled, error, result, rule, source
+    return compiled, error, pipeline, result, rule, source
 
 
 @app.cell
-def _(compiled, error, mo, rule):
-    mo.md("### Compiled Polars expressions")
+def _(error, mo, pipeline):
+    mo.md("### Polars pipeline (violations)")
     if error:
         mo.callout(mo.md(f"**Error:** `{error}`"), kind="danger")
-    elif rule is not None:
+    elif pipeline is not None:
         mo.md(f"""
-        - **GROUP BY:** {", ".join(rule.group_by)}
-        - **WHEN:** `{compiled.when}`
-        - **THEN:** `{compiled.then}`
+        ```python
+        {pipeline}
+        ```
         """)
     else:
         mo.md("_Waiting for a valid rule..._")

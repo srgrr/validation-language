@@ -110,7 +110,11 @@ def _(df, mo):
 def _(avl_editor, df, mo):
     from lark.exceptions import LarkError
 
-    from validation_language_mockup.evaluator import compile_rule, validate_rule
+    from validation_language_mockup.evaluator import (
+        compile_rule,
+        format_validation_pipeline,
+        validate_rule,
+    )
     from validation_language_mockup.parser import parse_avl
 
     source = avl_editor.value
@@ -126,22 +130,23 @@ def _(avl_editor, df, mo):
         result = None
         error = str(exc)
 
-    return compile_rule, compiled, error, result, rule, source, validate_rule
+    pipeline = format_validation_pipeline(compiled) if compiled else None
+    return compile_rule, compiled, error, pipeline, result, rule, source, validate_rule
 
 
 @app.cell
-def _(compiled, error, mo, rule):
+def _(error, mo, pipeline):
     if error:
         compiled_view = mo.callout(
             mo.md(f"**Parse / compile error:** `{error}`"), kind="danger"
         )
-    elif rule is not None:
+    elif pipeline is not None:
         compiled_view = mo.md(f"""
-        ### Compiled
+        ### Polars pipeline (violations)
 
-        - **GROUP BY:** {", ".join(rule.group_by)}
-        - **WHEN:** `{compiled.when}`
-        - **THEN:** `{compiled.then}`
+        ```python
+        {pipeline}
+        ```
         """)
     else:
         compiled_view = None

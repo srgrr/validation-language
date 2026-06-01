@@ -4,7 +4,11 @@ from pathlib import Path
 
 from validation_language_mockup.avl import load_avl, parse_avl_file
 from validation_language_mockup.data import load_csv
-from validation_language_mockup.evaluator import validate_rule
+from validation_language_mockup.evaluator import (
+    compile_rule,
+    format_validation_pipeline,
+    validate_rule,
+)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -22,13 +26,24 @@ def build_parser() -> argparse.ArgumentParser:
         type=Path,
         help="Path to the .avl validation file",
     )
+    parser.add_argument(
+        "--show-polars",
+        action="store_true",
+        help="Print the compiled Polars violation pipeline and exit",
+    )
     return parser
 
 
-def run(csv_file: Path, avl_file: Path) -> int:
+def run(csv_file: Path, avl_file: Path, *, show_polars: bool = False) -> int:
     df = load_csv(csv_file)
     avl = load_avl(avl_file)
     rule = parse_avl_file(avl_file)
+    compiled = compile_rule(rule)
+
+    if show_polars:
+        print(format_validation_pipeline(compiled))
+        return 0
+
     result = validate_rule(rule, df)
 
     print(f"CSV: {csv_file}")
@@ -47,7 +62,7 @@ def run(csv_file: Path, avl_file: Path) -> int:
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     try:
-        return run(args.csv_file, args.avl_file)
+        return run(args.csv_file, args.avl_file, show_polars=args.show_polars)
     except (FileNotFoundError, ValueError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1

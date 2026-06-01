@@ -60,6 +60,19 @@ def compile_rule(rule: Rule) -> CompiledRule:
     )
 
 
+def format_validation_pipeline(compiled: CompiledRule) -> str:
+    """Polars chain equivalent to the violation query in validate_rule."""
+    parts = [
+        f"df.filter({compiled.when})",
+        f".with_columns(_then={compiled.then})",
+        ".filter(~pl.col('_then'))",
+    ]
+    if compiled.group_by:
+        keys = ", ".join(repr(c) for c in compiled.group_by)
+        parts.append(f".group_by({keys}).agg(pl.all().first())")
+    return "".join(parts)
+
+
 def compile_bool(
     expr: BoolExpr,
     *,

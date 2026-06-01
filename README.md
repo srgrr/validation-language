@@ -22,6 +22,7 @@ python -m validation_language_mockup /path/to/data.csv /path/to/rules.avl
 |----------|-------------|
 | `data.csv` | CSV file to validate |
 | `rules.avl` | AVL validation rule file |
+| `--show-polars` | Print the compiled Polars violation pipeline (no validation run) |
 
 Exit code `0` when validation passes, `1` when it fails or on error.
 
