@@ -42,7 +42,8 @@ def _(examples, mo):
         """
         # AVL examples playground
 
-        Pick an example, edit its AVL rule, and see which rows/groups fail.
+        Pick an example, edit its AVL rule, and see the compiled Polars
+        expressions plus which rows/groups fail.
         """
     )
     example_picker = mo.ui.dropdown(
@@ -98,20 +99,37 @@ def _(csv_path, mo):
 def _(df, mo, rule_editor):
     from lark.exceptions import LarkError
 
-    from validation_language_mockup.evaluator import validate_rule
+    from validation_language_mockup.evaluator import compile_rule, validate_rule
     from validation_language_mockup.parser import parse_avl
 
     source = rule_editor.value
     try:
         rule = parse_avl(source)
+        compiled = compile_rule(rule)
         result = validate_rule(rule, df)
         error = None
     except (ValueError, TypeError, LarkError) as exc:
         rule = None
+        compiled = None
         result = None
         error = str(exc)
 
-    return error, result, rule, source
+    return compiled, error, result, rule, source
+
+
+@app.cell
+def _(compiled, error, mo, rule):
+    mo.md("### Compiled Polars expressions")
+    if error:
+        mo.callout(mo.md(f"**Error:** `{error}`"), kind="danger")
+    elif rule is not None:
+        mo.md(f"""
+        - **GROUP BY:** {", ".join(rule.group_by)}
+        - **WHEN:** `{compiled.when}`
+        - **THEN:** `{compiled.then}`
+        """)
+    else:
+        mo.md("_Waiting for a valid rule..._")
 
 
 @app.cell
