@@ -23,7 +23,7 @@ python -m validation_language_mockup /path/to/data.csv /path/to/rules.avl
 | `data.csv` | CSV file to validate |
 | `rules.avl` | AVL validation rule file |
 | `--show-polars` | Print the compiled Polars violation pipeline (no validation run) |
-| `--excel` [FILE] | Write Excel with white rows (ok) and red rows (violation); default: `<csv_stem>_validated.xlsx` |
+| `--excel` [FILE] | Write Excel with conditional formatting (red rows where the AVL violation formula is true); default: `<csv_stem>_validated.xlsx` |
 
 Exit code `0` when validation passes, `1` when it fails or on error.
 

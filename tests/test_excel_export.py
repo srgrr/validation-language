@@ -7,9 +7,6 @@ from validation_language_mockup.evaluator import compile_rule, row_violation_mas
 from validation_language_mockup.excel_export import export_validation_excel
 from validation_language_mockup.parser import parse_avl
 
-_VIOLATION_FILL = "FFC7CE"
-_OK_FILL = "FFFFFF"
-
 
 def test_row_violation_mask_when_not_matched() -> None:
     df = pl.DataFrame({"Origin": ["Madrid", "Barcelona"], "Destination": ["X", "Y"]})
@@ -27,7 +24,7 @@ GROUP BY
     assert row_violation_mask(df, compiled) == [False, True]
 
 
-def test_export_validation_excel_colors_rows(tmp_path: Path) -> None:
+def test_export_validation_excel_uses_conditional_formatting(tmp_path: Path) -> None:
     df = pl.DataFrame(
         {
             "Origin": ["Madrid", "Barcelona"],
@@ -44,19 +41,19 @@ GROUP BY
     "Origin"
 """
     )
-    compiled = compile_rule(rule)
     out = tmp_path / "out.xlsx"
 
-    count = export_validation_excel(df, compiled, out)
+    count, formula = export_validation_excel(df, rule, out)
 
     assert count == 1
     assert out.is_file()
+    assert 'A2="Barcelona"' in formula or "A2" in formula
 
     ws = load_workbook(out).active
     assert ws.cell(1, 1).value == "Origin"
-    assert ws.cell(1, 1).fill.fgColor.rgb in (None, "00000000", "FFFFFFFF")
+    cf_key = next(iter(ws.conditional_formatting._cf_rules))
+    assert str(cf_key.sqref) == "A2:B3"
 
-    ok_fill = ws.cell(2, 1).fill.fgColor.rgb
-    bad_fill = ws.cell(3, 1).fill.fgColor.rgb
-    assert ok_fill.endswith(_OK_FILL) or ok_fill in ("FFFFFFFF", "00FFFFFF")
-    assert bad_fill.endswith(_VIOLATION_FILL)
+    rule_obj = ws.conditional_formatting._cf_rules[cf_key][0]
+    assert rule_obj.type == "expression"
+    assert rule_obj.formula[0] == 'AND(A2="Barcelona",NOT(B2<>"Barcelona"))'

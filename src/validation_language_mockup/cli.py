@@ -68,10 +68,11 @@ def run(
 
     if excel is not None:
         excel_path = Path(excel) if excel else default_excel_path(csv_file)
-        violation_rows = export_validation_excel(df, compiled, excel_path)
+        violation_rows, cf_formula = export_validation_excel(df, rule, excel_path)
         print(f"CSV: {csv_file}")
         print(f"AVL: {avl.path}")
         print(f"Excel: {excel_path}")
+        print(f"Conditional formatting: {cf_formula}")
         print(f"Rows: {df.height} total, {violation_rows} violation row(s)")
         return 1 if violation_rows else 0
 
