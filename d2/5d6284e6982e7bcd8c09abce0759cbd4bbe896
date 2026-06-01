@@ -1,0 +1,33 @@
+src/validation_language_mockup/excel_export.py
+  s_0a84ece01dc7ff::t_a522c12cda4bcc 5,7,9-11,22,24-28,35,37-44,48
+README.md
+  s_0a84ece01dc7ff::t_1eb5c81e8e8b99 26
+src/validation_language_mockup/cli.py
+  s_0a84ece01dc7ff::t_cc56b428306531 71,75
+tests/test_excel_compile.py
+  s_0a84ece01dc7ff::t_346b0d32f59b13 1-41
+src/validation_language_mockup/excel_compile.py
+  s_0a84ece01dc7ff::t_c2f0d17552e0e0 1-2,5-23,25-163
+  s_0a84ece01dc7ff::t_fc0f0b7c9ab4aa 24
+  s_0a84ece01dc7ff::t_66dd49274b9d82 3-4
+tests/test_excel_export.py
+  s_0a84ece01dc7ff::t_6f4ba3ccc92b4d 54-55,57
+  s_0a84ece01dc7ff::t_9b557692ef3f95 27,46,50,58
+  s_0a84ece01dc7ff::t_38f8556b8dd9d8 59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "d25d6284e6982e7bcd8c09abce0759cbd4bbe896",
+  "prompts": {},
+  "sessions": {
+    "s_0a84ece01dc7ff": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "978781e1-6716-4c16-bb06-e17aba936a50",
+        "model": "default"
+      },
+      "human_author": "Sergio RG <sergio.guasch@archlet.ch>"
+    }
+  }
+}
