@@ -64,6 +64,45 @@ def test_show_polars_prints_pipeline(capsys: pytest.CaptureFixture[str], tmp_pat
     assert ".with_columns(_then=" in out
 
 
+def test_cli_excel_writes_file(tmp_path: Path) -> None:
+    csv_file = tmp_path / "data.csv"
+    csv_file.write_text("Origin,Destination\nMadrid,Madrid\nBarcelona,Barcelona\n")
+    avl = tmp_path / "rules.avl"
+    avl.write_text(
+        """\
+WHEN
+    COL(Origin) = "Barcelona"
+THEN
+    COL(Destination) != "Barcelona"
+GROUP BY
+    "Origin"
+"""
+    )
+    out = tmp_path / "report.xlsx"
+
+    assert main([str(csv_file), str(avl), "--excel", str(out)]) == 1
+    assert out.is_file()
+
+
+def test_cli_excel_default_path(tmp_path: Path) -> None:
+    csv_file = tmp_path / "data.csv"
+    csv_file.write_text("id\n1\n")
+    avl = tmp_path / "rules.avl"
+    avl.write_text(MINIMAL_AVL)
+
+    assert main([str(csv_file), str(avl), "--excel"]) == 0
+    assert (tmp_path / "data_validated.xlsx").is_file()
+
+
+def test_cli_excel_conflicts_with_show_polars(tmp_path: Path) -> None:
+    csv_file = tmp_path / "data.csv"
+    csv_file.write_text("id\n1\n")
+    avl = tmp_path / "rules.avl"
+    avl.write_text(MINIMAL_AVL)
+
+    assert main([str(csv_file), str(avl), "--show-polars", "--excel"]) == 1
+
+
 def test_cli_requires_both_arguments(tmp_path: Path) -> None:
     csv_file = tmp_path / "data.csv"
     csv_file.write_text("id\n1\n")

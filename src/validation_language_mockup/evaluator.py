@@ -152,6 +152,12 @@ def compile_column(col: ColExpr) -> pl.Expr:
     return pl.col(col.name)
 
 
+def row_violation_mask(df: pl.DataFrame, compiled: CompiledRule) -> list[bool]:
+    """True for rows that matched WHEN and failed THEN."""
+    _validate_columns(df, compiled.group_by)
+    return df.select(compiled.when & ~compiled.then).to_series().to_list()
+
+
 def _validate_columns(df: pl.DataFrame, columns: list[str]) -> None:
     missing = [c for c in columns if c not in df.columns]
     if missing:
