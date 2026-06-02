@@ -1,0 +1,23 @@
+src/validation_language_mockup/__init__.py
+  s_130ed50daec47b::t_6607fa53f2615e 4-7
+tests/test_library.py
+  s_130ed50daec47b::t_6de15383eff475 1-76
+src/validation_language_mockup/library.py
+  s_130ed50daec47b::t_8cf685191f08aa 1-93
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "797ce1569f32ae5c757124f27848f019babf701b",
+  "prompts": {},
+  "sessions": {
+    "s_130ed50daec47b": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "71ecf6d3-c6c2-4970-aec0-df9314391c16",
+        "model": "default"
+      },
+      "human_author": "Sergio RG <sergio.guasch@archlet.ch>"
+    }
+  }
+}
